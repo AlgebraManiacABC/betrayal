@@ -1,0 +1,6 @@
+renamer.sh
+src/img*
+.vscode*
+*.o
+betrayal*
+*.txt
