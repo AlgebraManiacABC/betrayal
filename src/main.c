@@ -1,5 +1,6 @@
 #include "../lib/mysdl.h"
 #include "../lib/main_menu.h"
+#include "../lib/game_loop.h"
 
 int main(int argc, char ** argv)
 {
@@ -9,7 +10,7 @@ int main(int argc, char ** argv)
     int win_w = MAIN_MENU_WIDTH;
     int win_h = MAIN_MENU_HEIGHT;
     if(mySDL_Init(SDL_INIT_EVERYTHING,&w,win_w,win_h,
-                  SDL_WINDOW_BORDERLESS,
+                  SDL_WINDOW_BORDERLESS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL,
                   "Betrayal at House on the Hill",&r))
     {
         return EXIT_FAILURE;
@@ -33,7 +34,9 @@ int main(int argc, char ** argv)
         case MAIN_MENU_ERROR:
             fprintf(stderr,"An unknown error occurred in the main menu! Quitting...\n");
             break;
-        case START_HOST:    //  TODO: Begin Host game. Decide what to do at that moment (player count? Assume for now)
+        case START_HOST:
+            mySDL_Maximize_Window(&w,&r);
+            play_game(w,r);
             break;
         case START_JOIN:
             break;
@@ -45,5 +48,6 @@ int main(int argc, char ** argv)
     Mix_CloseAudio();
     TTF_Quit();
     mySDL_Close(LEVEL_REND,r,w);
+    fprintf(stderr,"Exiting successfully!\n");
     return EXIT_SUCCESS;
 }

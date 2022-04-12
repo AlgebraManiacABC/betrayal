@@ -5,7 +5,7 @@ int summon_main_menu(SDL_Window *w, SDL_Renderer *r)
     SDL_SetWindowSize(w,MAIN_MENU_WIDTH,MAIN_MENU_HEIGHT);
     SDL_SetWindowBordered(w,false);
     SDL_Texture * menu_bg_img = NULL;
-    SDL_Surface * temp = IMG_Load(MENUBG);
+    SDL_Surface * temp = IMG_Load(MENU_BG);
     if(!temp)
     {
         fprintf(stderr,"Surface creation failure: %s\n",SDL_GetError());

@@ -12,7 +12,6 @@
 #define STATE_MAIN      0
 #define STATE_START     1
 
-#define MASK_NONE       0b00000000
 #define MASK_START      0b00000001
 #define MASK_OPTIONS    0b00000010
 #define MASK_QUIT       0b00000100

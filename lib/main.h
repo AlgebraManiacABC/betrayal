@@ -8,6 +8,9 @@
 #include <SDL2/SDL_mixer.h>
 #include <stdbool.h>
 #include <stdarg.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "assets.h"
 
 #ifndef MAIN_MENU_WIDTH
@@ -15,6 +18,10 @@
 #define MAIN_MENU_WIDTH 1189
 #define MAIN_MENU_HEIGHT 794
 
+#define MASK_NONE 0
+
 #define DINKFONT "src/font/Dink-vKXE.ttf"
+
+#define ROOMS_TABLE "lib/rooms.csv"
 
 #endif

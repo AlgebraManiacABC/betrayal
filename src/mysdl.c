@@ -32,6 +32,35 @@ int mySDL_Init(Uint32 init_flags, SDL_Window ** w, int win_w, int win_h,
     return EXIT_SUCCESS;
 }
 
+int mySDL_Maximize_Window(SDL_Window ** w, SDL_Renderer ** r)
+{
+    SDL_DisplayMode disp;
+    if(SDL_GetDesktopDisplayMode(0,&disp))
+    {
+        fprintf(stderr,"Couldn't get display mode! %s\n",SDL_GetError());
+        return EXIT_FAILURE;
+    }
+    SDL_DestroyWindow(*w);
+    *w = SDL_CreateWindow("Betrayal at House on the Hill",
+                SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,
+                disp.w,disp.h,
+                SDL_WINDOW_MAXIMIZED | SDL_WINDOW_BORDERLESS);
+    if(!(*w))
+    {
+        fprintf(stderr,"Window could not be resized! %s\n",SDL_GetError());
+        return EXIT_FAILURE;
+    }
+    SDL_DestroyRenderer(*r);
+    *r = SDL_CreateRenderer(*w,-1,
+                SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+    if(!(*r))
+    {
+        fprintf(stderr,"Window could not be resized! %s\n",SDL_GetError());
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}
+
 int mySDL_Close(int level, ...)
 {
     va_list vars;
