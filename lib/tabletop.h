@@ -46,6 +46,7 @@ typedef struct tile
     int orientation;    //  North is: N-0, E-1, S-2, W-3
     int x;  //  Position relative to the anchor
     int y;
+    bool render;
 
 }   tile_s;
 
@@ -65,6 +66,7 @@ typedef level_s * level;
 typedef struct
 {
     level floors[FLOOR_COUNT];
+    list deck;
 
 }   tabletop_s;
 

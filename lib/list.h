@@ -12,3 +12,15 @@ typedef struct node
 }   node_s;
 
 node make_node(void *obj, node next);
+
+list init_list();
+
+int insert_node(list head, void *obj);
+
+void * remove_head(list head);
+
+void free_list(list head);
+
+bool empty(list head);
+
+int list_length(list head);

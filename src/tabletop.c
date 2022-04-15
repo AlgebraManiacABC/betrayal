@@ -12,6 +12,8 @@ tabletop init_tabletop(SDL_Window *w, SDL_Renderer *r)
     }
     for(int i=0; i<FLOOR_COUNT; i++)
         table->floors[i] = init_floor(r,i,deck);
+    
+    table->deck = deck;
 
     return table;
 }
@@ -33,17 +35,27 @@ level init_floor(SDL_Renderer *r, int floor, list deck)
     {
         case FLOOR_BASEMENT:
             new->anchor = draw_specific_room(deck,"basementlanding");
+            new->anchor->x = 0;
+            new->anchor->y = 0;
             break;
         case FLOOR_GROUND:
             new->anchor = draw_specific_room(deck,"entrancehall");
+            new->anchor->x = 0;
+            new->anchor->y = 0;
             new->anchor->W = draw_specific_room(deck,"foyer");
             new->anchor->W->E = new->anchor;
+            new->anchor->W->x = -1;
+            new->anchor->W->y = 0;
             new->anchor->W->W = draw_specific_room(deck,"grandstaircase");
             new->anchor->W->W->E = new->anchor->W;
+            new->anchor->W->W->x = -2;
+            new->anchor->W->W->y = 0;
             new->d_left = 2;
             break;
         case FLOOR_UPPER:
             new->anchor = draw_specific_room(deck,"upperlanding");
+            new->anchor->x = 0;
+            new->anchor->y = 0;
             break;
         case FLOOR_ROOF:
         default:
@@ -59,7 +71,7 @@ level init_floor(SDL_Renderer *r, int floor, list deck)
 
 list load_rooms(SDL_Renderer *r)
 {
-    list head = make_node(NULL,NULL);
+    list head = init_list();
     if(!head) return NULL;
 
     FILE * fp = fopen(ROOMS_TABLE,"r");
@@ -134,6 +146,8 @@ list load_rooms(SDL_Renderer *r)
         t->dumbwaiter = (a?true:false);
         t->outside    = (b?true:false);
         t->window     = (c?true:false);
+
+        t->render = false;
     }
     fclose(fp);
 
