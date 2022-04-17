@@ -7,6 +7,8 @@ void play_game(SDL_Window *w, SDL_Renderer *r);
 
 int summon_pause_menu();
 
+void render_bg(SDL_Renderer *r, SDL_Texture * bg);
+
 void render_floor(SDL_Renderer *r, level floor, int x, int y, int ww, int wh, int zoom);
 
 void render_room(SDL_Renderer *r, tile room, int x, int y, int ww, int wh, int zoom);

@@ -124,23 +124,28 @@ int summon_main_menu(SDL_Window *w, SDL_Renderer *r)
     }
     free(txt_menu);
     Mix_FreeMusic(ambience);
-    Mix_FreeChunk(creak);
 
     switch(selection)
     {
         case START_JOIN:
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,"Not yet implemented","This feature is not yet implemented!",w);
+            Mix_FreeChunk(creak);
             return MAIN_MENU_QUIT;
         case START_HOST:
             Mix_HaltMusic();
             Mix_PlayChannel(-1,creak,0);
+            SDL_Delay(3000);
+            Mix_FreeChunk(creak);
             return START_HOST;
         case MAIN_MENU_OPTIONS:
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,"Not yet implemented","This feature is not yet implemented!",w);
+            Mix_FreeChunk(creak);
             return MAIN_MENU_QUIT;
         case MAIN_MENU_QUIT:
+            Mix_FreeChunk(creak);
             return MAIN_MENU_QUIT;
         default:
+            Mix_FreeChunk(creak);
             return MAIN_MENU_ERROR;
     }
 }

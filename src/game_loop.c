@@ -38,6 +38,12 @@ void play_game(SDL_Window *w, SDL_Renderer *r)
                         case SDL_SCANCODE_2:
                             current_floor = FLOOR_UPPER;
                             break;
+                        case SDL_SCANCODE_LEFTBRACKET:
+                            cycle_bg(r,table,FORWARD);
+                            break;
+                        case SDL_SCANCODE_RIGHTBRACKET:
+                            cycle_bg(r,table,BACKWARD);
+                            break;
                         default:
                             break;
                     }
@@ -86,11 +92,20 @@ void play_game(SDL_Window *w, SDL_Renderer *r)
         if(y < miny) y = miny;
 
         SDL_RenderClear(r);
+        render_bg(r,table->bgs[table->bg_id]);
         render_floor(r,table->floors[current_floor],x,y,ww,wh,zoom);
         SDL_RenderPresent(r);
     }
 
     delete_tabletop(table);
+}
+
+void render_bg(SDL_Renderer *r, SDL_Texture * bg)
+{
+    if(!bg) return;
+    SDL_Rect back = {0,0,0,0};
+    SDL_QueryTexture(bg,NULL,NULL,&back.w,&back.h);
+    SDL_RenderCopy(r,bg,NULL,&back);
 }
 
 void render_floor(SDL_Renderer *r, level floor, int x, int y, int ww, int wh, int zoom)

@@ -27,6 +27,10 @@
 #define CARD_ITEM  2
 #define CARD_OMEN  3
 
+#define FORWARD true
+#define BACKWARD false
+#define BG_COUNT 5
+
 typedef struct tile * tile;
 
 typedef struct tile
@@ -67,6 +71,8 @@ typedef struct
 {
     level floors[FLOOR_COUNT];
     list deck;
+    SDL_Texture ** bgs;
+    int bg_id;
 
 }   tabletop_s;
 
@@ -74,6 +80,10 @@ typedef tabletop_s * tabletop;
 
 //  Will return a prepared tabletop struct
 tabletop init_tabletop(SDL_Window *w, SDL_Renderer *r);
+
+SDL_Texture ** load_bgs(SDL_Renderer *r);
+
+void cycle_bg(SDL_Renderer *r, tabletop table, bool dir);
 
 level init_floor(SDL_Renderer *r, int floor, list deck);
 

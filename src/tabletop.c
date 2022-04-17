@@ -14,8 +14,43 @@ tabletop init_tabletop(SDL_Window *w, SDL_Renderer *r)
         table->floors[i] = init_floor(r,i,deck);
     
     table->deck = deck;
+    table->bgs = load_bgs(r);
+    table->bg_id = 0;
 
     return table;
+}
+
+SDL_Texture ** load_bgs(SDL_Renderer *r)
+{
+    char * bg_files[BG_COUNT]={NULL,DARK_BG,LIGHT_BG,MONOCHROME_BG,ROUGH_BG};
+    SDL_Texture ** bg_textures = malloc(sizeof(SDL_Texture *));
+    SDL_Surface * temp;
+    for(int i=0; i<BG_COUNT; i++)
+    {
+        if(!bg_files[i])
+        {
+            bg_textures[i] = NULL;
+            continue;
+        }
+        temp = IMG_Load(bg_files[i]);
+        bg_textures[i] = SDL_CreateTextureFromSurface(r,temp);
+        SDL_FreeSurface(temp);
+    }
+    return bg_textures;
+}
+
+void cycle_bg(SDL_Renderer *r, tabletop table, bool dir)
+{
+    if(dir)
+    {
+        if(++(table->bg_id)>BG_COUNT-1)
+            table->bg_id = 0;
+    }
+    else
+    {
+        if(--(table->bg_id)<0)
+            table->bg_id = BG_COUNT-1;
+    }
 }
 
 level init_floor(SDL_Renderer *r, int floor, list deck)
@@ -39,18 +74,19 @@ level init_floor(SDL_Renderer *r, int floor, list deck)
             new->anchor->y = 0;
             break;
         case FLOOR_GROUND:
-            new->anchor = draw_specific_room(deck,"entrancehall");
+            new->anchor = draw_specific_room(deck,"foyer");
             new->anchor->x = 0;
             new->anchor->y = 0;
-            new->anchor->W = draw_specific_room(deck,"foyer");
+            new->anchor->W = draw_specific_room(deck,"grandstaircase");
             new->anchor->W->E = new->anchor;
             new->anchor->W->x = -1;
             new->anchor->W->y = 0;
-            new->anchor->W->W = draw_specific_room(deck,"grandstaircase");
-            new->anchor->W->W->E = new->anchor->W;
-            new->anchor->W->W->x = -2;
-            new->anchor->W->W->y = 0;
-            new->d_left = 2;
+            new->anchor->E = draw_specific_room(deck,"entrancehall");
+            new->anchor->E->E = new->anchor->W;
+            new->anchor->E->x = 1;
+            new->anchor->E->y = 0;
+            new->d_left = 1;
+            new->d_right = 1;
             break;
         case FLOOR_UPPER:
             new->anchor = draw_specific_room(deck,"upperlanding");
@@ -199,6 +235,7 @@ void delete_tabletop(tabletop table)
 {
     for(int i=0; i<FLOOR_COUNT; i++)
         delete_floor(table->floors[i]);
+    free(table->bgs);
 }
 
 void delete_floor(level floor)
