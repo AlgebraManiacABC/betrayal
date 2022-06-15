@@ -245,3 +245,4 @@
 #define LIGHT_BG "src/img/bg/light_bg.jpg"
 #define MONOCHROME_BG "src/img/bg/monochrome_bg.jpg"
 #define ROUGH_BG "src/img/bg/rough_bg.jpg"
+#define SELECT "src/img/select.png"

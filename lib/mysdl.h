@@ -11,4 +11,6 @@ int mySDL_Init(Uint32 init_flags, SDL_Window ** w, int win_w, int win_h,
 
 int mySDL_Maximize_Window(SDL_Window ** w, SDL_Renderer ** r);
 
+bool isMouseOverRect(int mx, int my, SDL_Rect rect);
+
 int mySDL_Close(int level, ...);

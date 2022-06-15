@@ -20,7 +20,8 @@
 
 #define MASK_NONE 0
 
-#define DINKFONT "src/font/Dink-vKXE.ttf"
+#define DINKFONT "src/font/Dink/Dink-vKXE.ttf"
+#define SANSFONT "src/font/FreeSans/FreeSans/FreeSans-LrmZ.ttf"
 
 #define ROOMS_TABLE "lib/rooms.csv"
 

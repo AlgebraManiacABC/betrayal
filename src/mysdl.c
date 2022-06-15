@@ -61,6 +61,15 @@ int mySDL_Maximize_Window(SDL_Window ** w, SDL_Renderer ** r)
     return EXIT_SUCCESS;
 }
 
+bool isMouseOverRect(int mx, int my, SDL_Rect rect)
+{
+    if(mx > (rect.x+rect.w) || mx < (rect.x))
+        return false;
+    if(my > (rect.y+rect.h) || my < (rect.y))
+        return false;
+    return true;
+}
+
 int mySDL_Close(int level, ...)
 {
     va_list vars;

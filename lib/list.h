@@ -19,6 +19,8 @@ int insert_node(list head, void *obj);
 
 void * remove_head(list head);
 
+void * remove_next(node here);
+
 void free_list(list head);
 
 bool empty(list head);

@@ -13,15 +13,10 @@
 #define MASK_UPPER      0b0000100
 #define MASK_ROOF       0b0001000
 
-#define MASK_DOOR_N     0b0001000
-#define MASK_DOOR_S     0b0000100
-#define MASK_DOOR_E     0b0000010
-#define MASK_DOOR_W     0b0000001
-
-#define O_NORTH 0
-#define O_EAST  1
-#define O_SOUTH 2
-#define O_WEST  3
+#define MASK_N      0b0001000
+#define MASK_S      0b0000100
+#define MASK_E      0b0000010
+#define MASK_W      0b0000001
 
 #define CARD_EVENT 1
 #define CARD_ITEM  2
@@ -47,7 +42,7 @@ typedef struct tile
     tile E;
     tile S;
     tile W;
-    int orientation;    //  North is: N-0, E-1, S-2, W-3
+    Uint32 orientation;
     int x;  //  Position relative to the anchor
     int y;
     bool render;
@@ -57,10 +52,11 @@ typedef struct tile
 typedef struct
 {
     tile anchor;
-    int d_up;
-    int d_right;
-    int d_down;
-    int d_left; //  Distances from the anchor to the farthest tile
+    list rooms;
+    int maxtilex;
+    int mintilex;
+    int maxtiley;
+    int mintiley; //  Distances from the anchor to the farthest tile in respective location
 
 }   level_s;
 
@@ -73,6 +69,7 @@ typedef struct
     list deck;
     SDL_Texture ** bgs;
     int bg_id;
+    tile highlight;
 
 }   tabletop_s;
 
@@ -92,6 +89,8 @@ list load_rooms(SDL_Renderer *r);
 SDL_Texture * get_tile_img(SDL_Renderer *r, char * tilename);
 
 tile draw_specific_room(list deck, char * tilename);
+
+tile draw_valid_room(list deck, Uint32 floor_mask);
 
 list shuffle_deck(list deck);
 

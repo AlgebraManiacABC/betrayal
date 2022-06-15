@@ -1,8 +1,12 @@
 CC=gcc
 CFLAGS=-Wall -Werror -lm -std=c17
+TARGET=betrayal
 ifeq ($(OS),Windows_NT)
-	CFLAGS += -llibSDL2_image -lmingw32
+	CFLAGS += -lmingw32 -llibSDL2_image 
 #-Wl,--subsystem,windows
+	TARGET := $(TARGET).exe
+else
+	CFLAGS += -lSDL_image
 endif
 	CFLAGS += -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_mixer
 
@@ -38,6 +42,6 @@ endif
 
 .PHONY: clean
 clean:
-	$(RM) betrayal
+	$(RM) $(TARGET)
 	$(RM) -r $(OBJ_DIR)
 #Careful with the -r...

@@ -38,6 +38,15 @@ void * remove_head(list head)
     return obj;
 }
 
+void * remove_next(node here)
+{
+    node next = here->next;
+    void * obj = next->obj;
+    here->next = next->next;
+    free(next);
+    return obj;
+}
+
 void free_list(list head)
 {
     while(head->next)

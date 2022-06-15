@@ -13,9 +13,19 @@ tabletop init_tabletop(SDL_Window *w, SDL_Renderer *r)
     for(int i=0; i<FLOOR_COUNT; i++)
         table->floors[i] = init_floor(r,i,deck);
     
-    table->deck = deck;
+    table->deck = shuffle_deck(deck);
     table->bgs = load_bgs(r);
     table->bg_id = 0;
+
+
+    table->highlight = malloc(sizeof(tile_s));
+    table->highlight->name = malloc(sizeof(char) * (1+strlen("Highlight")));
+    strcpy(table->highlight->name,"Highlight");
+    SDL_Surface * temp = IMG_Load(SELECT);
+    table->highlight->img = SDL_CreateTextureFromSurface(r,temp);
+    SDL_FreeSurface(temp);
+    table->highlight->x = 0;
+    table->highlight->y = 0;
 
     return table;
 }
@@ -61,10 +71,11 @@ level init_floor(SDL_Renderer *r, int floor, list deck)
         fprintf(stderr,"Memory error initializing floor %d.\n",floor);
         return NULL;
     }
-    new->d_up = 0;
-    new->d_down = 0;
-    new->d_left = 0;
-    new->d_right = 0;
+    new->maxtilex = 0;
+    new->mintilex = 0;
+    new->maxtiley = 0;
+    new->mintiley = 0;
+    new->rooms = init_list();
 
     switch(floor)
     {
@@ -72,6 +83,7 @@ level init_floor(SDL_Renderer *r, int floor, list deck)
             new->anchor = draw_specific_room(deck,"basementlanding");
             new->anchor->x = 0;
             new->anchor->y = 0;
+            insert_node(new->rooms,new->anchor);
             break;
         case FLOOR_GROUND:
             new->anchor = draw_specific_room(deck,"foyer");
@@ -85,13 +97,17 @@ level init_floor(SDL_Renderer *r, int floor, list deck)
             new->anchor->E->E = new->anchor->W;
             new->anchor->E->x = 1;
             new->anchor->E->y = 0;
-            new->d_left = 1;
-            new->d_right = 1;
+            new->maxtilex = 1;
+            new->mintilex = -1;
+            insert_node(new->rooms,new->anchor);
+            insert_node(new->rooms,new->anchor->W);
+            insert_node(new->rooms,new->anchor->E);
             break;
         case FLOOR_UPPER:
             new->anchor = draw_specific_room(deck,"upperlanding");
             new->anchor->x = 0;
             new->anchor->y = 0;
+            insert_node(new->rooms,new->anchor);
             break;
         case FLOOR_ROOF:
         default:
@@ -159,23 +175,23 @@ list load_rooms(SDL_Renderer *r)
 
         t->legal_floors = MASK_NONE;
         fscanf(fp,"%[^,],",buf);
-        if(buf[0]) t->legal_floors |= MASK_ROOF;
-        if(buf[1]) t->legal_floors |= MASK_UPPER;
-        if(buf[2]) t->legal_floors |= MASK_GROUND;
-        if(buf[3]) t->legal_floors |= MASK_BASEMENT;
+        if(buf[0]-'0') t->legal_floors |= MASK_ROOF;
+        if(buf[1]-'0') t->legal_floors |= MASK_UPPER;
+        if(buf[2]-'0') t->legal_floors |= MASK_GROUND;
+        if(buf[3]-'0') t->legal_floors |= MASK_BASEMENT;
 
         t->doors = MASK_NONE;
         fscanf(fp,"%[^,],",buf);
-        if(buf[0]) t->doors |= MASK_DOOR_N;
-        if(buf[1]) t->doors |= MASK_DOOR_S;
-        if(buf[2]) t->doors |= MASK_DOOR_E;
-        if(buf[3]) t->doors |= MASK_DOOR_W;
+        if(buf[0]-'0') t->doors |= MASK_N;
+        if(buf[1]-'0') t->doors |= MASK_S;
+        if(buf[2]-'0') t->doors |= MASK_E;
+        if(buf[3]-'0') t->doors |= MASK_W;
 
         t->N = NULL;
         t->S = NULL;
         t->E = NULL;
         t->W = NULL;
-        t->orientation = O_NORTH;
+        t->orientation = MASK_N;
         
         int a,b,c;
         fscanf(fp,"%d,%d,%d",&a,&b,&c);
@@ -184,6 +200,9 @@ list load_rooms(SDL_Renderer *r)
         t->window     = (c?true:false);
 
         t->render = false;
+
+        t->x = INT_MIN;
+        t->y = INT_MIN;
     }
     fclose(fp);
 
@@ -229,6 +248,38 @@ tile draw_specific_room(list deck, char * tilename)
     n->next = temp->next;
     free(temp);
     return found;
+}
+
+tile draw_valid_room(list deck, Uint32 floor_mask)
+{
+    tile draw;
+    for(int i=0; i<list_length(deck); i++)
+    {
+        draw = remove_head(deck);
+        if(draw->legal_floors & floor_mask)
+            return draw;
+        else
+            insert_node(deck,draw);
+    }
+    return NULL;
+}
+
+list shuffle_deck(list deck)
+{
+    list new = init_list();
+    int len = list_length(deck);
+    while(len)
+    {
+        node temp = deck;
+        for(int r = rand()%len; r; r--)
+            temp = temp->next;
+
+        insert_node(new,remove_next(temp));
+        len--;
+    }
+    free_list(deck);
+    deck = new;
+    return new;
 }
 
 void delete_tabletop(tabletop table)
